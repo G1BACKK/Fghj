@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Portal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .image-container {
+            position: relative;
+            display: block;
+        }
+        .adjustable-button {
+            position: absolute;
+            background: transparent !important;
+            border: none !important;
+            cursor: pointer;
+            z-index: 2;
+            color: transparent !important;
+            font-size: 12px;
+            font-weight: bold;
+            overflow: hidden;
+            padding: 0;
+        }
+        #viewer-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .viewer-btn {
+            position: absolute;
+            background: transparent !important;
+            border: none !important;
+            cursor: pointer;
+            z-index: 2;
+            color: transparent !important;
+            padding: 0;
+        }
+        .button-marker {
+            position: absolute;
+            border: 2px solid red;
+            color: red;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+            background: rgba(255,255,255,0.3);
+        }
+        #dynamic-content {
+            position: relative;
+            width: 100%;
+            min-height: 100px;
+        }
+        #dynamic-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .new-button {
+            position: absolute;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .new-button-marker {
+            position: absolute;
+            border: 2px solid blue;
+            color: blue;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- First Image with Transparent Buttons -->
+    <div class="image-container">
+        <img src="https://files.catbox.moe/bimlx2.jpeg" style="display:block;max-width:100%;height:auto">
+        <!-- MAIN Button - A1 -->
+        <div class="button-marker" style="width: 50px; height: 50px; top: 0px; left: 0px;">A1</div>
+        <button class="adjustable-button" 
+                style="width: 50px; height: 50px; top: 0px; left: 0px;"
+                onclick="window.open('https://jalwagame.win/#/main', '_blank')"></button>
+        
+        <!-- WALLET Button - A2 -->
+        <div class="button-marker" style="width: 120px; height: 50px; top: 0px; right: 0px;">A2</div>
+        <button class="adjustable-button" 
+                style="width: 120px; height: 50px; top: 0px; right: 0px;"
+                onclick="window.open('https://jalwagame.win/#/wallet/RechargeHistory', '_blank')"></button>
+    </div>
+
+    <!-- Second Image Viewer with Transparent Buttons -->
+    <div class="image-container">
+        <img id="viewer-image" src="https://files.catbox.moe/pjgeyb.jpeg">
+        <!-- Viewer Buttons -->
+        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 15px;">A3</div>
+        <button class="viewer-btn" 
+                style="width: 95px; height: 103px; bottom: 12px; left: 15px;"
+                onclick="showImage(0)"></button>
+        
+        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 120px;">A4</div>
+        <button class="viewer-btn" 
+                style="width: 95px; height: 103px; bottom: 12px; left: 120px;"
+                onclick="handleA4Click()"></button>
+        
+        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 225px;">A5</div>
+        <button class="viewer-btn" 
+                style="width: 95px; height: 103px; bottom: 12px; left: 225px;"
+                onclick="handleA5Click()"></button>
+        
+        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 330px;">A6</div>
+        <button class="viewer-btn" 
+                style="width: 95px; height: 103px; bottom: 12px; left: 330px;"
+                onclick="handleA6Click()"></button>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <div id="dynamic-content">
+        <img id="static-image" src="https://files.catbox.moe/u1xvot.jpeg" style="display:block;">
+    </div>
+
+    <script>
+        const images = [
+            "https://files.catbox.moe/pjgeyb.jpeg",
+            "https://files.catbox.moe/3hpop7.jpeg",
+            "https://files.catbox.moe/w8f692.jpeg",
+            "https://files.catbox.moe/70210f.jpeg"
+        ];
+
+        // Configuration for A4 buttons (A41-A44)
+        const a4ButtonsConfig = [
+            { 
+                id: "A41", 
+                width: 175, 
+                height: 67, 
+                top: 64, 
+                left: 30, 
+                action: () => alert("A41 clicked") 
+            },
+            { 
+                id: "A42", 
+                width: 175, 
+                height: 67, 
+                top: 147, 
+                left: 30, 
+                action: () => {
+                    document.getElementById('static-image').src = "https://files.catbox.moe/tm2ob7.jpeg";
+                } 
+            },
+            { 
+                id: "A43", 
+                width: 175, 
+                height: 67, 
+                top: 64, 
+                left: 230, 
+                action: () => {
+                    document.getElementById('static-image').src = "https://files.catbox.moe/sw0m55.jpeg";
+                } 
+            },
+            { 
+                id: "A44", 
+                width: 175, 
+                height: 67, 
+                top: 147, 
+                left: 230, 
+                action: () => {
+                    document.getElementById('static-image').src = "https://files.catbox.moe/ealgw9.jpeg";
+                } 
+            }
+        ];
+
+        // Configuration for A5 buttons (A51-A54) - same as A4
+        const a5ButtonsConfig = [
+            { id: "A51", width: 175, height: 67, top: 64, left: 30, action: () => alert("A51 clicked") },
+            { id: "A52", width: 175, height: 67, top: 147, left: 30, action: () => alert("A52 clicked") },
+            { id: "A53", width: 175, height: 67, top: 64, left: 230, action: () => alert("A53 clicked") },
+            { id: "A54", width: 175, height: 67, top: 147, left: 230, action: () => alert("A54 clicked") }
+        ];
+
+        // Configuration for A6 buttons (A61-A62) - only 2 buttons
+        const a6ButtonsConfig = [
+            { id: "A61", width: 370, height: 67, top: 64, left: 30, action: () => alert("A61 clicked") },
+            { id: "A62", width: 370, height: 67, top: 147, left: 30, action: () => alert("A62 clicked") }
+        ];
+
+        function showImage(index) {
+            document.getElementById('viewer-image').src = images[index];
+            document.getElementById('static-image').style.display = 'block';
+            document.getElementById('static-image').src = "https://files.catbox.moe/u1xvot.jpeg";
+            clearNewButtons();
+        }
+
+        function handleA4Click() {
+            document.getElementById('viewer-image').src = images[1];
+            document.getElementById('static-image').style.display = 'block';
+            document.getElementById('static-image').src = "https://files.catbox.moe/n19c9v.jpeg";
+            createNewButtons(a4ButtonsConfig);
+        }
+
+        function handleA5Click() {
+            document.getElementById('viewer-image').src = images[2];
+            document.getElementById('static-image').style.display = 'block';
+            document.getElementById('static-image').src = "https://files.catbox.moe/0qw1o7.jpeg";
+            createNewButtons(a5ButtonsConfig);
+        }
+
+        function handleA6Click() {
+            document.getElementById('viewer-image').src = images[3];
+            document.getElementById('static-image').style.display = 'block';
+            document.getElementById('static-image').src = "https://files.catbox.moe/gagwtv.jpeg";
+            createNewButtons(a6ButtonsConfig);
+        }
+
+        function createNewButtons(buttonsConfig) {
+            clearNewButtons();
+            const container = document.getElementById('dynamic-content');
+            
+            buttonsConfig.forEach(config => {
+                // Create button marker
+                const marker = document.createElement('div');
+                marker.className = 'new-button-marker';
+                marker.textContent = config.id;
+                marker.style.width = `${config.width}px`;
+                marker.style.height = `${config.height}px`;
+                marker.style.top = `${config.top}px`;
+                marker.style.left = `${config.left}px`;
+                container.appendChild(marker);
+                
+                // Create invisible button
+                const btn = document.createElement('button');
+                btn.className = 'new-button';
+                btn.style.width = `${config.width}px`;
+                btn.style.height = `${config.height}px`;
+                btn.style.top = `${config.top}px`;
+                btn.style.left = `${config.left}px`;
+                btn.onclick = config.action;
+                container.appendChild(btn);
+            });
+        }
+
+        function clearNewButtons() {
+            const markers = document.querySelectorAll('.new-button-marker');
+            const buttons = document.querySelectorAll('.new-button');
+            
+            markers.forEach(m => m.remove());
+            buttons.forEach(b => b.remove());
+        }
+        
+        window.onload = function() {
+            images.forEach(img => new Image().src = img);
+            new Image().src = "https://files.catbox.moe/u1xvot.jpeg";
+            new Image().src = "https://files.catbox.moe/n19c9v.jpeg";
+            new Image().src = "https://files.catbox.moe/0qw1o7.jpeg";
+            new Image().src = "https://files.catbox.moe/gagwtv.jpeg";
+            new Image().src = "https://files.catbox.moe/tm2ob7.jpeg";
+            new Image().src = "https://files.catbox.moe/sw0m55.jpeg";
+            new Image().src = "https://files.catbox.moe/ealgw9.jpeg";
+        };
+    </script>
+</body>
+</html>
