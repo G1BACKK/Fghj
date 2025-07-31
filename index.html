@@ -1,282 +1,343 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Game Portal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-        .image-container {
-            position: relative;
-            display: block;
-            width: 100%;
-            max-width: 800px; /* Fixed maximum width */
-            margin: 0 auto;
-        }
-        .adjustable-button {
-            position: absolute;
-            background: transparent !important;
-            border: none !important;
-            cursor: pointer;
-            z-index: 2;
-            color: transparent !important;
-            font-size: 12px;
-            font-weight: bold;
-            overflow: hidden;
-            padding: 0;
-        }
-        #viewer-image {
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            display: block;
-        }
-        .viewer-btn {
-            position: absolute;
-            background: transparent !important;
-            border: none !important;
-            cursor: pointer;
-            z-index: 2;
-            color: transparent !important;
-            padding: 0;
-        }
-        .button-marker {
-            position: absolute;
-            border: 2px solid red;
-            color: red;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 3;
-            background: rgba(255,255,255,0.3);
-        }
-        #dynamic-content {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            min-height: 100px;
-            margin: 0 auto;
-        }
-        #dynamic-content img {
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            display: block;
-        }
-        .new-button {
-            position: absolute;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            z-index: 2;
-        }
-        .new-button-marker {
-            position: absolute;
-            border: 2px solid blue;
-            color: blue;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 3;
-            background: rgba(255,255,255,0.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Video Experience | Your Brand</title>
+  <meta name="description" content="An elegant video sharing experience">
+  <style>
+    :root {
+      --primary: #0088cc;
+      --primary-dark: #0077bb;
+      --text-light: #ffffff;
+      --bg-dark: #121212;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Video Player Styles */
+    .video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s ease-out;
+      z-index: 10;
+    }
+    
+    .video-player {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Control Bar */
+    .controls {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      z-index: 20;
+    }
+    
+    .control-btn {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition);
+      backdrop-filter: blur(5px);
+    }
+    
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    
+    /* Share Screen */
+    .share-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      background: var(--bg-dark);
+      z-index: 30;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .share-title {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+    
+    .share-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    .share-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+    }
+    
+    .share-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    /* Loading State */
+    .loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-dark);
+      z-index: 40;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .controls {
+        bottom: 20px;
+        gap: 15px;
+      }
+      
+      .control-btn {
+        width: 45px;
+        height: 45px;
+      }
+      
+      .share-title {
+        font-size: 1.5rem;
+      }
+      
+      .share-subtitle {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- First Image with Transparent Buttons -->
-    <div class="image-container">
-        <img src="https://files.catbox.moe/bimlx2.jpeg" style="display:block;width:100%;height:auto">
-        <!-- MAIN Button - A1 -->
-        <div class="button-marker" style="width: 50px; height: 50px; top: 0px; left: 0px;">A1</div>
-        <button class="adjustable-button" 
-                style="width: 50px; height: 50px; top: 0px; left: 0px;"
-                onclick="window.open('https://jalwagame.win/#/main', '_blank')"></button>
-        
-        <!-- WALLET Button - A2 -->
-        <div class="button-marker" style="width: 120px; height: 50px; top: 0px; right: 0px;">A2</div>
-        <button class="adjustable-button" 
-                style="width: 120px; height: 50px; top: 0px; right: 0px;"
-                onclick="window.open('https://jalwagame.win/#/wallet/RechargeHistory', '_blank')"></button>
+  <div class="container">
+    <!-- Loading Screen -->
+    <div class="loader">
+      <div class="spinner"></div>
     </div>
-
-    <!-- Second Image Viewer with Transparent Buttons -->
-    <div class="image-container">
-        <img id="viewer-image" src="https://files.catbox.moe/pjgeyb.jpeg">
-        <!-- Viewer Buttons -->
-        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 15px;">A3</div>
-        <button class="viewer-btn" 
-                style="width: 95px; height: 103px; bottom: 12px; left: 15px;"
-                onclick="showImage(0)"></button>
-        
-        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 120px;">A4</div>
-        <button class="viewer-btn" 
-                style="width: 95px; height: 103px; bottom: 12px; left: 120px;"
-                onclick="handleA4Click()"></button>
-        
-        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 225px;">A5</div>
-        <button class="viewer-btn" 
-                style="width: 95px; height: 103px; bottom: 12px; left: 225px;"
-                onclick="handleA5Click()"></button>
-        
-        <div class="button-marker" style="width: 95px; height: 103px; bottom: 12px; left: 330px;">A6</div>
-        <button class="viewer-btn" 
-                style="width: 95px; height: 103px; bottom: 12px; left: 330px;"
-                onclick="handleA6Click()"></button>
+    
+    <!-- Video Player -->
+    <div class="video-container">
+      <video class="video-player" playsinline muted>
+        <source src="https://files.catbox.moe/39m0nr.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      
+      <div class="controls">
+        <button class="control-btn" id="unmuteBtn" title="Unmute">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+      </div>
     </div>
-
-    <!-- Dynamic Content Area -->
-    <div id="dynamic-content">
-        <img id="static-image" src="https://files.catbox.moe/u1xvot.jpeg" style="display:block;width:100%">
+    
+    <!-- Share Screen -->
+    <div class="share-screen" id="shareScreen">
+      <h1 class="share-title">Enjoyed the experience?</h1>
+      <p class="share-subtitle">Share this with your friends and help spread the word about our premium content.</p>
+      <a href="#" class="share-btn" id="shareBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+          <polyline points="16 6 12 2 8 6"></polyline>
+          <line x1="12" y1="2" x2="12" y2="15"></line>
+        </svg>
+        Share on Telegram
+      </a>
     </div>
+  </div>
 
-    <script>
-        const images = [
-            "https://files.catbox.moe/pjgeyb.jpeg",
-            "https://files.catbox.moe/3hpop7.jpeg",
-            "https://files.catbox.moe/w8f692.jpeg",
-            "https://files.catbox.moe/70210f.jpeg"
-        ];
-
-        // Configuration for A4 buttons (A41-A44)
-        const a4ButtonsConfig = [
-            { 
-                id: "A41", 
-                width: 175, 
-                height: 67, 
-                top: 64, 
-                left: 30, 
-                action: () => alert("A41 clicked") 
-            },
-            { 
-                id: "A42", 
-                width: 175, 
-                height: 67, 
-                top: 147, 
-                left: 30, 
-                action: () => {
-                    document.getElementById('static-image').src = "https://files.catbox.moe/tm2ob7.jpeg";
-                } 
-            },
-            { 
-                id: "A43", 
-                width: 175, 
-                height: 67, 
-                top: 64, 
-                left: 230, 
-                action: () => {
-                    document.getElementById('static-image').src = "https://files.catbox.moe/sw0m55.jpeg";
-                } 
-            },
-            { 
-                id: "A44", 
-                width: 175, 
-                height: 67, 
-                top: 147, 
-                left: 230, 
-                action: () => {
-                    document.getElementById('static-image').src = "https://files.catbox.moe/ealgw9.jpeg";
-                } 
-            }
-        ];
-
-        // Configuration for A5 buttons (A51-A54) - same as A4
-        const a5ButtonsConfig = [
-            { id: "A51", width: 175, height: 67, top: 64, left: 30, action: () => alert("A51 clicked") },
-            { id: "A52", width: 175, height: 67, top: 147, left: 30, action: () => alert("A52 clicked") },
-            { id: "A53", width: 175, height: 67, top: 64, left: 230, action: () => alert("A53 clicked") },
-            { id: "A54", width: 175, height: 67, top: 147, left: 230, action: () => alert("A54 clicked") }
-        ];
-
-        // Configuration for A6 buttons (A61-A62) - only 2 buttons
-        const a6ButtonsConfig = [
-            { id: "A61", width: 370, height: 67, top: 64, left: 30, action: () => alert("A61 clicked") },
-            { id: "A62", width: 370, height: 67, top: 147, left: 30, action: () => alert("A62 clicked") }
-        ];
-
-        function showImage(index) {
-            document.getElementById('viewer-image').src = images[index];
-            document.getElementById('static-image').style.display = 'block';
-            document.getElementById('static-image').src = "https://files.catbox.moe/u1xvot.jpeg";
-            clearNewButtons();
+  <script>
+    // DOM Elements
+    const loader = document.querySelector('.loader');
+    const videoContainer = document.querySelector('.video-container');
+    const video = document.querySelector('.video-player');
+    const unmuteBtn = document.getElementById('unmuteBtn');
+    const shareScreen = document.getElementById('shareScreen');
+    const shareBtn = document.getElementById('shareBtn');
+    
+    // State
+    let isMuted = true;
+    
+    // Initialize
+    function init() {
+      // Hide loader when video can play
+      video.addEventListener('canplay', () => {
+        setTimeout(() => {
+          loader.style.opacity = '0';
+          setTimeout(() => {
+            loader.style.display = 'none';
+            startVideoPlayback();
+          }, 500);
+        }, 1000);
+      });
+      
+      // Set up controls
+      setupControls();
+      
+      // Load video
+      video.load();
+    }
+    
+    // Start video playback
+    function startVideoPlayback() {
+      video.play()
+        .then(() => {
+          console.log('Video playback started');
+        })
+        .catch(error => {
+          console.error('Autoplay failed:', error);
+          // Show custom play button if needed
+        });
+    }
+    
+    // Set up control buttons
+    function setupControls() {
+      // Unmute button
+      unmuteBtn.addEventListener('click', toggleMute);
+      
+      // Video ended handler
+      video.addEventListener('ended', showShareScreen);
+      
+      // Click to play/pause
+      video.addEventListener('click', () => {
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
         }
-
-        function handleA4Click() {
-            document.getElementById('viewer-image').src = images[1];
-            document.getElementById('static-image').style.display = 'block';
-            document.getElementById('static-image').src = "https://files.catbox.moe/n19c9v.jpeg";
-            createNewButtons(a4ButtonsConfig);
-        }
-
-        function handleA5Click() {
-            document.getElementById('viewer-image').src = images[2];
-            document.getElementById('static-image').style.display = 'block';
-            document.getElementById('static-image').src = "https://files.catbox.moe/0qw1o7.jpeg";
-            createNewButtons(a5ButtonsConfig);
-        }
-
-        function handleA6Click() {
-            document.getElementById('viewer-image').src = images[3];
-            document.getElementById('static-image').style.display = 'block';
-            document.getElementById('static-image').src = "https://files.catbox.moe/gagwtv.jpeg";
-            createNewButtons(a6ButtonsConfig);
-        }
-
-        function createNewButtons(buttonsConfig) {
-            clearNewButtons();
-            const container = document.getElementById('dynamic-content');
-            
-            buttonsConfig.forEach(config => {
-                // Create button marker
-                const marker = document.createElement('div');
-                marker.className = 'new-button-marker';
-                marker.textContent = config.id;
-                marker.style.width = `${config.width}px`;
-                marker.style.height = `${config.height}px`;
-                marker.style.top = `${config.top}px`;
-                marker.style.left = `${config.left}px`;
-                container.appendChild(marker);
-                
-                // Create invisible button
-                const btn = document.createElement('button');
-                btn.className = 'new-button';
-                btn.style.width = `${config.width}px`;
-                btn.style.height = `${config.height}px`;
-                btn.style.top = `${config.top}px`;
-                btn.style.left = `${config.left}px`;
-                btn.onclick = config.action;
-                container.appendChild(btn);
-            });
-        }
-
-        function clearNewButtons() {
-            const markers = document.querySelectorAll('.new-button-marker');
-            const buttons = document.querySelectorAll('.new-button');
-            
-            markers.forEach(m => m.remove());
-            buttons.forEach(b => b.remove());
-        }
+      });
+    }
+    
+    // Toggle mute state
+    function toggleMute() {
+      isMuted = !isMuted;
+      video.muted = isMuted;
+      
+      // Update button icon
+      const icon = unmuteBtn.querySelector('svg');
+      if (isMuted) {
+        icon.innerHTML = `
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        `;
+        unmuteBtn.setAttribute('title', 'Unmute');
+      } else {
+        icon.innerHTML = `
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-8a7 7 0 0 1 14 0z"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        `;
+        unmuteBtn.setAttribute('title', 'Mute');
+      }
+    }
+    
+    // Show share screen
+    function showShareScreen() {
+      videoContainer.style.opacity = '0';
+      setTimeout(() => {
+        videoContainer.style.display = 'none';
+        shareScreen.style.display = 'flex';
         
-        window.onload = function() {
-            images.forEach(img => new Image().src = img);
-            new Image().src = "https://files.catbox.moe/u1xvot.jpeg";
-            new Image().src = "https://files.catbox.moe/n19c9v.jpeg";
-            new Image().src = "https://files.catbox.moe/0qw1o7.jpeg";
-            new Image().src = "https://files.catbox.moe/gagwtv.jpeg";
-            new Image().src = "https://files.catbox.moe/tm2ob7.jpeg";
-            new Image().src = "https://files.catbox.moe/sw0m55.jpeg";
-            new Image().src = "https://files.catbox.moe/ealgw9.jpeg";
-        };
-    </script>
+        // Animate in
+        setTimeout(() => {
+          shareScreen.style.opacity = '1';
+        }, 50);
+      }, 500);
+    }
+    
+    // Telegram share function
+    shareBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const message = "Check out this premium video experience: ";
+      const url = window.location.href;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(message)}`;
+      window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+    });
+    
+    // Initialize the app
+    init();
+  </script>
 </body>
 </html>
