@@ -1,343 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium Video Experience | Your Brand</title>
-  <meta name="description" content="An elegant video sharing experience">
+  <title>Forward to Unlock</title>
   <style>
-    :root {
-      --primary: #0088cc;
-      --primary-dark: #0077bb;
-      --text-light: #ffffff;
-      --bg-dark: #121212;
-      --transition: all 0.3s ease;
-    }
-    
-    * {
+    body, html {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-light);
-      height: 100vh;
       overflow: hidden;
-    }
-    
-    .container {
-      position: relative;
-      width: 100%;
+      background: #000;
       height: 100%;
-    }
-    
-    /* Video Player Styles */
-    .video-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      transition: opacity 0.5s ease-out;
-      z-index: 10;
-    }
-    
-    .video-player {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    /* Control Bar */
-    .controls {
-      position: absolute;
-      bottom: 30px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      z-index: 20;
-    }
-    
-    .control-btn {
-      background: rgba(0, 0, 0, 0.7);
+      font-family: Arial, sans-serif;
       color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: var(--transition);
-      backdrop-filter: blur(5px);
+      text-align: center;
     }
-    
-    .control-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(1.1);
-    }
-    
-    /* Share Screen */
-    .share-screen {
-      position: absolute;
+    #forwardScreen {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: none;
+      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 30px;
-      background: var(--bg-dark);
-      z-index: 30;
-      padding: 20px;
-      text-align: center;
+      gap: 20px;
     }
-    
-    .share-title {
-      font-size: 2rem;
-      font-weight: 300;
-      margin-bottom: 10px;
-    }
-    
-    .share-subtitle {
-      font-size: 1.1rem;
-      opacity: 0.8;
-      max-width: 500px;
-      line-height: 1.6;
-    }
-    
-    .share-btn {
-      background: var(--primary);
+    #forwardBtn {
+      padding: 12px 24px;
+      background: #0088cc;
       color: white;
       border: none;
-      border-radius: 30px;
-      padding: 15px 40px;
-      font-size: 1.1rem;
+      border-radius: 4px;
+      font-size: 16px;
       cursor: pointer;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: var(--transition);
     }
-    
-    .share-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-    
-    /* Loading State */
-    .loader {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: var(--bg-dark);
-      z-index: 40;
-    }
-    
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--primary);
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .controls {
-        bottom: 20px;
-        gap: 15px;
-      }
-      
-      .control-btn {
-        width: 45px;
-        height: 45px;
-      }
-      
-      .share-title {
-        font-size: 1.5rem;
-      }
-      
-      .share-subtitle {
-        font-size: 1rem;
-      }
+    #contentScreen {
+      display: none;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Loading Screen -->
-    <div class="loader">
-      <div class="spinner"></div>
-    </div>
-    
-    <!-- Video Player -->
-    <div class="video-container">
-      <video class="video-player" playsinline muted>
-        <source src="https://files.catbox.moe/39m0nr.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      
-      <div class="controls">
-        <button class="control-btn" id="unmuteBtn" title="Unmute">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-    
-    <!-- Share Screen -->
-    <div class="share-screen" id="shareScreen">
-      <h1 class="share-title">Enjoyed the experience?</h1>
-      <p class="share-subtitle">Share this with your friends and help spread the word about our premium content.</p>
-      <a href="#" class="share-btn" id="shareBtn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-          <polyline points="16 6 12 2 8 6"></polyline>
-          <line x1="12" y1="2" x2="12" y2="15"></line>
-        </svg>
-        Share on Telegram
-      </a>
-    </div>
+  <div id="forwardScreen">
+    <h2>Forward to 10 people to unlock content</h2>
+    <a id="forwardBtn" href="#">Forward on Telegram</a>
+    <p id="counter">Forwards: 0/10</p>
+  </div>
+
+  <div id="contentScreen">
+    <!-- Your hidden content appears here after forwarding -->
+    <h2>Thank you!</h2>
+    <p>Here's your exclusive content...</p>
+    <a id="downloadBtn" href="#">Download Now</a>
   </div>
 
   <script>
-    // DOM Elements
-    const loader = document.querySelector('.loader');
-    const videoContainer = document.querySelector('.video-container');
-    const video = document.querySelector('.video-player');
-    const unmuteBtn = document.getElementById('unmuteBtn');
-    const shareScreen = document.getElementById('shareScreen');
-    const shareBtn = document.getElementById('shareBtn');
+    const forwardBtn = document.getElementById('forwardBtn');
+    const forwardScreen = document.getElementById('forwardScreen');
+    const contentScreen = document.getElementById('contentScreen');
+    const counter = document.getElementById('counter');
+    const downloadBtn = document.getElementById('downloadBtn');
     
-    // State
-    let isMuted = true;
-    
-    // Initialize
-    function init() {
-      // Hide loader when video can play
-      video.addEventListener('canplay', () => {
-        setTimeout(() => {
-          loader.style.opacity = '0';
-          setTimeout(() => {
-            loader.style.display = 'none';
-            startVideoPlayback();
-          }, 500);
-        }, 1000);
-      });
-      
-      // Set up controls
-      setupControls();
-      
-      // Load video
-      video.load();
-    }
-    
-    // Start video playback
-    function startVideoPlayback() {
-      video.play()
-        .then(() => {
-          console.log('Video playback started');
-        })
-        .catch(error => {
-          console.error('Autoplay failed:', error);
-          // Show custom play button if needed
-        });
-    }
-    
-    // Set up control buttons
-    function setupControls() {
-      // Unmute button
-      unmuteBtn.addEventListener('click', toggleMute);
-      
-      // Video ended handler
-      video.addEventListener('ended', showShareScreen);
-      
-      // Click to play/pause
-      video.addEventListener('click', () => {
-        if (video.paused) {
-          video.play();
-        } else {
-          video.pause();
-        }
-      });
-    }
-    
-    // Toggle mute state
-    function toggleMute() {
-      isMuted = !isMuted;
-      video.muted = isMuted;
-      
-      // Update button icon
-      const icon = unmuteBtn.querySelector('svg');
-      if (isMuted) {
-        icon.innerHTML = `
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-          <line x1="12" y1="19" x2="12" y2="23"></line>
-          <line x1="8" y1="23" x2="16" y2="23"></line>
-        `;
-        unmuteBtn.setAttribute('title', 'Unmute');
-      } else {
-        icon.innerHTML = `
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-8a7 7 0 0 1 14 0z"></path>
-          <line x1="12" y1="19" x2="12" y2="23"></line>
-          <line x1="8" y1="23" x2="16" y2="23"></line>
-        `;
-        unmuteBtn.setAttribute('title', 'Mute');
-      }
-    }
-    
-    // Show share screen
-    function showShareScreen() {
-      videoContainer.style.opacity = '0';
-      setTimeout(() => {
-        videoContainer.style.display = 'none';
-        shareScreen.style.display = 'flex';
-        
-        // Animate in
-        setTimeout(() => {
-          shareScreen.style.opacity = '1';
-        }, 50);
-      }, 500);
-    }
-    
-    // Telegram share function
-    shareBtn.addEventListener('click', (e) => {
+    let forwards = 0;
+
+    // Telegram forward button
+    forwardBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const message = "Check out this premium video experience: ";
+      const msg = "Forward this to 10 people to unlock content!";
       const url = window.location.href;
-      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(message)}`;
-      window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      
+      // Open Telegram forwarding directly
+      window.location.href = `tg://msg_url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
+      
+      // Simulate forward tracking (replace with real API calls)
+      const checkForwards = setInterval(() => {
+        forwards++;
+        counter.textContent = `Forwards: ${forwards}/10`;
+        
+        if (forwards >= 10) {
+          clearInterval(checkForwards);
+          forwardScreen.style.display = 'none';
+          contentScreen.style.display = 'block';
+        }
+      }, 2000); // Checks every 2 seconds (demo only)
     });
-    
-    // Initialize the app
-    init();
+
+    // Download button
+    downloadBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = "YOUR_DOWNLOAD_LINK_HERE";
+    });
   </script>
 </body>
 </html>
