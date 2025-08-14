@@ -1,98 +1,727 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forward to Unlock</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #000;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-    }
-    #forwardScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-    }
-    #forwardBtn {
-      padding: 12px 24px;
-      background: #0088cc;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    #contentScreen {
-      display: none;
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Video Content</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e1e1e1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        /* Hero Poster Section */
+        .hero-poster {
+            position: relative;
+            height: 40vh;
+            min-height: 300px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.6), rgba(255,45,85,0.2));
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+        }
+        
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff2d55, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255,45,85,0.5);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .explore-btn {
+            background: linear-gradient(45deg, #ff2d55, #ff6b9d);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255,45,85,0.3);
+        }
+        
+        .explore-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255,45,85,0.4);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 60px 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #ff2d55;
+        }
+        
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .video-card {
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,45,85,0.1);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(255,45,85,0.2);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .video-thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .video-info {
+            padding: 20px;
+        }
+        
+        .video-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .vip-badge {
+            background: linear-gradient(45deg, #ff2d55, #ff6b9d);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .free-badge {
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        video {
+            width: 100%;
+            border-radius: 10px;
+            display: none;
+            background: #000;
+        }
+        
+        .active-video {
+            display: block;
+        }
+        
+        .video-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .copy-link-btn {
+            background: linear-gradient(45deg, #333, #555);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-link-btn:hover {
+            background: linear-gradient(45deg, #555, #777);
+            transform: translateY(-2px);
+        }
+        
+        .copy-link-btn.copied {
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+        }
+        
+        /* Payment Overlay */
+        .payment-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+        }
+        
+        .payment-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            color: #333;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            position: relative;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .payment-title {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .payment-subtitle {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            color: #666;
+        }
+        
+        .payment-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 20px 0 30px 0;
+            color: #ff2d55;
+            text-shadow: 0 2px 4px rgba(255,45,85,0.2);
+        }
+        
+        .qr-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 15px;
+            border: 2px solid #f0f0f0;
+        }
+        
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 15px auto;
+            border-radius: 12px;
+            object-fit: contain;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: block;
+        }
+        
+        .scan-text {
+            font-size: 0.9rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .upi-id {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 0.85rem;
+            border: 1px solid #e9ecef;
+            color: #495057;
+        }
+        
+        .upi-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .upi-btn {
+            padding: 10px 12px;
+            border-radius: 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .upi-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .paytm { background: #00baf2; }
+        .gpay { background: #4285F4; }
+        .phonepe { background: #5f259f; }
+        .bhim { background: #4CAF50; }
+        
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            background: #ff2d55;
+            color: white;
+        }
+        
+        .payment-note {
+            font-size: 0.8rem;
+            margin-top: 15px;
+            color: #999;
+            line-height: 1.4;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-poster {
+                height: 35vh;
+                min-height: 250px;
+            }
+            
+            .main-content {
+                padding: 30px 15px;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .payment-box {
+                padding: 25px;
+                width: 95%;
+            }
+            
+            .upi-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Hidden audio */
+        #paymentAudio {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div id="forwardScreen">
-    <h2>Forward to 10 people to unlock content</h2>
-    <a id="forwardBtn" href="#">Forward on Telegram</a>
-    <p id="counter">Forwards: 0/10</p>
-  </div>
+    <!-- Hero Poster Section -->
+    <section class="hero-poster">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Premium Video Content</h1>
+            <p class="hero-subtitle">Exclusive high-quality videos just for you</p>
+            <button class="explore-btn" onclick="document.querySelector('.main-content').scrollIntoView()">
+                <i class="fas fa-play"></i> Explore Videos
+            </button>
+        </div>
+    </section>
 
-  <div id="contentScreen">
-    <!-- Your hidden content appears here after forwarding -->
-    <h2>Thank you!</h2>
-    <p>Here's your exclusive content...</p>
-    <a id="downloadBtn" href="#">Download Now</a>
-  </div>
-
-  <script>
-    const forwardBtn = document.getElementById('forwardBtn');
-    const forwardScreen = document.getElementById('forwardScreen');
-    const contentScreen = document.getElementById('contentScreen');
-    const counter = document.getElementById('counter');
-    const downloadBtn = document.getElementById('downloadBtn');
-    
-    let forwards = 0;
-
-    // Telegram forward button
-    forwardBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const msg = "Forward this to 10 people to unlock content!";
-      const url = window.location.href;
-      
-      // Open Telegram forwarding directly
-      window.location.href = `tg://msg_url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`;
-      
-      // Simulate forward tracking (replace with real API calls)
-      const checkForwards = setInterval(() => {
-        forwards++;
-        counter.textContent = `Forwards: ${forwards}/10`;
+    <!-- Main Content -->
+    <section class="main-content">
+        <h2 class="section-title">Featured Videos</h2>
         
-        if (forwards >= 10) {
-          clearInterval(checkForwards);
-          forwardScreen.style.display = 'none';
-          contentScreen.style.display = 'block';
-        }
-      }, 2000); // Checks every 2 seconds (demo only)
-    });
+        <div class="video-grid">
+            <!-- VIP Video 1 -->
+            <div class="video-card">
+                <img src="https://i.ibb.co/chXnPcQd/IMG-7431.jpg" class="video-thumbnail" onclick="playPreview(this, 'https://files.catbox.moe/0b1ufl.mp4', 'video1')" alt="VIP Video">
+                <div class="video-info">
+                    <h3 class="video-title">VIP Exclusive Content <span class="vip-badge">VIP</span></h3>
+                    <video id="video1" controls controlsList="nodownload noplaybackrate" disablePictureInPicture preload="none">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-actions">
+                        <button class="copy-link-btn" onclick="copyVideoLink('video1')">
+                            <i class="fas fa-link"></i> Share Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FREE Video 2 -->
+            <div class="video-card">
+                <img src="https://i.ibb.co/XfJNFPbg/IMG-7420.jpg" class="video-thumbnail" onclick="playFreeVideo(this, 'https://files.catbox.moe/0b1ufl.mp4', 'video2')" alt="Free Video 1">
+                <div class="video-info">
+                    <h3 class="video-title">Free Video 1 <span class="free-badge">FREE</span></h3>
+                    <video id="video2" controls controlsList="nodownload noplaybackrate" disablePictureInPicture preload="none">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-actions">
+                        <button class="copy-link-btn" onclick="copyVideoLink('video2')">
+                            <i class="fas fa-link"></i> Share Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FREE Video 3 -->
+            <div class="video-card">
+                <img src="https://i.ibb.co/6JGtJfB3/IMG-7421.jpg" class="video-thumbnail" onclick="playFreeVideo(this, 'https://files.catbox.moe/0b1ufl.mp4', 'video3')" alt="Free Video 2">
+                <div class="video-info">
+                    <h3 class="video-title">Free Video 2 <span class="free-badge">FREE</span></h3>
+                    <video id="video3" controls controlsList="nodownload noplaybackrate" disablePictureInPicture preload="none">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-actions">
+                        <button class="copy-link-btn" onclick="copyVideoLink('video3')">
+                            <i class="fas fa-link"></i> Share Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Download button
-    downloadBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = "YOUR_DOWNLOAD_LINK_HERE";
-    });
-  </script>
+    <!-- Payment Overlay -->
+    <div class="payment-overlay" id="paymentOverlay">
+        <div class="payment-box">
+            <button class="close-btn" onclick="closePayment()">×</button>
+            
+            <h2 class="payment-title">Unlock Full Video</h2>
+            <p class="payment-subtitle">Continue watching premium content</p>
+            <div class="payment-amount">₹99</div>
+            
+            <div class="qr-section">
+                <img class="qr-code" src="https://files.catbox.moe/jfr77c.jpeg" alt="UPI QR Code">
+                <p class="scan-text">Scan QR code with any UPI app</p>
+            </div>
+            
+            <div class="upi-id">netc.34161FA820328AA2D218C8C0@mairtel</div>
+            
+            <div class="upi-buttons">
+                <button class="upi-btn paytm" onclick="openUPI('paytm')">
+                    <i class="fab fa-cc-paypal"></i> Paytm
+                </button>
+                <button class="upi-btn gpay" onclick="openUPI('gpay')">
+                    <i class="fab fa-google"></i> GPay
+                </button>
+                <button class="upi-btn phonepe" onclick="openUPI('phonepe')">
+                    <i class="fas fa-mobile-alt"></i> PhonePe
+                </button>
+                <button class="upi-btn bhim" onclick="openUPI('bhim')">
+                    <i class="fas fa-rupee-sign"></i> BHIM
+                </button>
+            </div>
+            
+            <p class="payment-note">Payment will be verified automatically within 1-2 minutes</p>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="paymentAudio" src="https://files.catbox.moe/7ye49n.mp3" preload="none"></audio>
+
+    <script>
+        // Video player configuration
+        let currentVideoId = null;
+        let previewTimer = null;
+        const PREVIEW_DURATION = 7000; // 7 seconds for VIP video
+        const paymentAudio = document.getElementById('paymentAudio');
+        
+        // Play preview of VIP video (shows payment after 7 seconds)
+        function playPreview(thumbnail, videoUrl, videoId) {
+            // Hide all other videos and show their thumbnails
+            document.querySelectorAll('video').forEach(v => {
+                if (v.id !== videoId) {
+                    v.style.display = 'none';
+                    v.pause();
+                    v.currentTime = 0;
+                    const otherThumbnail = v.closest('.video-card').querySelector('.video-thumbnail');
+                    if (otherThumbnail) {
+                        otherThumbnail.style.display = 'block';
+                    }
+                }
+            });
+            
+            // Set current video
+            currentVideoId = videoId;
+            const video = document.getElementById(videoId);
+            const source = video.querySelector('source');
+            
+            // Set video source and play
+            if (source.src !== videoUrl) {
+                source.src = videoUrl;
+                video.load();
+            }
+            
+            video.style.display = 'block';
+            thumbnail.style.display = 'none';
+            
+            // Start preview timer
+            startPreviewTimer(video);
+            
+            // Play video with error handling
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Auto-play was prevented:", error);
+                    alert("Click the video to start preview");
+                });
+            }
+        }
+        
+        // Play free video (no restrictions)
+        function playFreeVideo(thumbnail, videoUrl, videoId) {
+            // Only hide the clicked video's thumbnail
+            const video = document.getElementById(videoId);
+            const source = video.querySelector('source');
+            
+            // Set video source and play
+            if (source.src !== videoUrl) {
+                source.src = videoUrl;
+                video.load();
+            }
+            
+            video.style.display = 'block';
+            thumbnail.style.display = 'none';
+            
+            // Play full video with no restrictions
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Auto-play was prevented:", error);
+                    video.controls = true;
+                });
+            }
+            
+            // When video ends, keep the video player visible
+            video.onended = function() {
+                video.controls = true;
+            };
+        }
+        
+        // Start preview timer (7 seconds for VIP video)
+        function startPreviewTimer(video) {
+            clearTimeout(previewTimer);
+            
+            // Enforce playback restrictions
+            video.playbackRate = 1.0;
+            
+            // Set timer to show payment after preview duration
+            previewTimer = setTimeout(() => {
+                video.pause();
+                showPaymentOverlay();
+            }, PREVIEW_DURATION);
+            
+            // Prevent seeking past preview
+            video.addEventListener('timeupdate', function() {
+                if (this.currentTime > (PREVIEW_DURATION / 1000)) {
+                    this.pause();
+                    clearTimeout(previewTimer);
+                    showPaymentOverlay();
+                }
+            });
+        }
+        
+        // Show payment overlay
+        function showPaymentOverlay() {
+            const overlay = document.getElementById('paymentOverlay');
+            overlay.style.display = 'flex';
+            
+            // Play notification sound
+            if (paymentAudio) {
+                paymentAudio.currentTime = 0;
+                paymentAudio.play().catch(e => console.log("Audio blocked by browser"));
+            }
+            
+            // Disable body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close payment function
+        function closePayment() {
+            const overlay = document.getElementById('paymentOverlay');
+            overlay.style.display = 'none';
+            
+            // Stop audio
+            if (paymentAudio) {
+                paymentAudio.pause();
+                paymentAudio.currentTime = 0;
+            }
+            
+            // Reset video and show thumbnail
+            if (currentVideoId) {
+                const video = document.getElementById(currentVideoId);
+                const thumbnail = video.closest('.video-card').querySelector('.video-thumbnail');
+                
+                video.style.display = 'none';
+                video.pause();
+                video.currentTime = 0;
+                thumbnail.style.display = 'block';
+                
+                clearTimeout(previewTimer);
+                currentVideoId = null;
+            }
+            
+            // Re-enable body scroll
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Open UPI apps
+        function openUPI(app) {
+            const upiId = "netc.34161FA820328AA2D218C8C0@mairtel";
+            const name = encodeURIComponent("Premium Video Access");
+            const amount = "99";
+            let uri;
+            
+            const baseUPI = `upi://pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR`;
+            
+            switch(app) {
+                case 'paytm': 
+                    uri = `paytmmp://pay?pa=${upiId}&pn=${name}&am=${amount}`;
+                    break;
+                case 'gpay': 
+                    uri = `tez://upi/pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR`;
+                    break;
+                case 'phonepe': 
+                    uri = `phonepe://pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR`;
+                    break;
+                case 'bhim': 
+                    uri = baseUPI;
+                    break;
+                default: 
+                    uri = baseUPI;
+            }
+            
+            window.open(uri, '_blank');
+        }
+        
+        // Copy video link
+        async function copyVideoLink(videoId) {
+            const url = `${window.location.href.split('?')[0]}?video=${videoId}`;
+            const btn = document.querySelector(`button[onclick="copyVideoLink('${videoId}')"]`);
+            
+            try {
+                await navigator.clipboard.writeText(url);
+                
+                // Success feedback
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2500);
+                
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                btn.innerHTML = '<i class="fas fa-exclamation"></i> Failed';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-link"></i> Share Video';
+                }, 2500);
+            }
+        }
+        
+        // Auto-play for shared links
+        function handleSharedLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoId = urlParams.get('video');
+            
+            if (videoId && document.getElementById(videoId)) {
+                const thumbnail = document.querySelector(`.video-thumbnail[onclick*="${videoId}"]`);
+                if (thumbnail) {
+                    const onclickAttr = thumbnail.getAttribute('onclick');
+                    const videoUrl = onclickAttr.match(/'([^']+)'/)[1];
+                    
+                    if (videoId === 'video1') {
+                        playPreview(thumbnail, videoUrl, videoId);
+                    } else {
+                        playFreeVideo(thumbnail, videoUrl, videoId);
+                    }
+                }
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            handleSharedLink();
+        });
+    </script>
 </body>
 </html>
